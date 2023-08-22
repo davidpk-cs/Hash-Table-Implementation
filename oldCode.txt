@@ -1,0 +1,26 @@
+bool Cache::insert(Person person) {
+
+    //verify that the ID is valid, return false if it isn't
+    if (person.getID() < MINID || person.getID() > MAXID) {
+        return false;
+    }
+    
+    //give it base hash value
+    int bucketNum = m_hash(person.m_key) % m_currentCap;
+    
+    //for calculating with the probing function
+    int i = 0;
+
+    //iterate and update bucket Number until we get to an empty or deleted bucket, or the same one
+    while (m_currentTable[bucketNum].getID() != 0 && m_currentTable[bucketNum].getID() != person.getID() && m_currentTable[bucketNum].getKey() != DELETEDKEY) {
+        bucketNum = ((person.getID() % m_currentCap) + (i * i)) % m_currentCap;
+        i++;
+        
+    }
+
+    m_currentTable[bucketNum] = person;
+
+    m_currentSize++;
+
+    return true;
+}
